@@ -20,11 +20,15 @@ const WINDOW_CONFIG = {
     minHeight: 480,
     route: '/chat',
     title: 'aipets 聊天',
-    frame: true,
+    // 无边框：标题栏由渲染层画，只保留一条可拖动的窄条和关闭按钮。
+    frame: false,
     transparent: false,
     alwaysOnTop: false,
     skipTaskbar: false,
-    backplate: true,
+    // 不使用 Acrylic。Windows 11 的 acrylic 在窗口首次显示时会先以半透明
+    // 状态出现一帧，肉眼看到的就是打开瞬间闪一下。纯色背景由页面铺满，
+    // 预创建后显示时不会露出底色。
+    backplate: false,
   },
   settings: {
     width: 1080,
@@ -197,15 +201,18 @@ class SecondaryWindows {
     return { ...base, backgroundColor: '#0e0e12' }
   }
 
-  open(kind, route) {
+  open(kind, route, options = {}) {
     const config = WINDOW_CONFIG[kind]
     if (!config)
       throw new Error(`未知的窗口种类：${kind}`)
 
     const existing = this.resolve(kind)
     if (existing) {
-      existing.show()
-      existing.focus()
+      // show: false 时只返回窗口，由调用方定位后再显示，避免在旧位置闪一帧。
+      if (options.show !== false) {
+        existing.show()
+        existing.focus()
+      }
       this.notify()
       return existing
     }
@@ -214,7 +221,10 @@ class SecondaryWindows {
     const window = new BrowserWindow(this.options(kind, bounds))
     this.windows.set(kind, window)
 
-    window.once('ready-to-show', () => window.show())
+    // 预创建时传 show: false，窗口保持隐藏，点击时再直接显示。
+    if (options.show !== false)
+      window.once('ready-to-show', () => window.show())
+
     window.on('move', () => this.saveBounds(kind, window))
     window.on('resize', () => this.saveBounds(kind, window))
     window.on('closed', () => {
@@ -230,6 +240,30 @@ class SecondaryWindows {
     void window.loadURL(this.routeUrl(route ?? config.route))
     this.notify()
     return window
+  }
+
+  /**
+   * 预创建窗口但不显示。
+   *
+   * 聊天窗口常驻但隐藏，点击悬浮球时直接 show，避免每次点击都重新加载页面。
+   */
+  preload(kind) {
+    const existing = this.resolve(kind)
+    if (existing)
+      return existing
+
+    return this.open(kind, undefined, { show: false })
+  }
+
+  /** 隐藏但不销毁，再次打开时无需重新加载页面。 */
+  hide(kind) {
+    const window = this.resolve(kind)
+    if (!window || window.isDestroyed())
+      return false
+
+    window.hide()
+    this.notify()
+    return true
   }
 
   close(kind) {

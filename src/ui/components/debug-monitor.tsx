@@ -4,7 +4,8 @@
  * 只用于排查“对话后不放风筝”的链路问题，验证完成后可以删除。
  */
 
-import { useSyncExternalStore } from 'react'
+import { useState, useSyncExternalStore } from 'react'
+import { X } from 'lucide-react'
 
 import { parseAmbientProgram, totalHoldMs } from '@/character/ambient'
 import { useAmbientStore } from '@/config/domains/ambient'
@@ -62,10 +63,24 @@ export function DebugMonitor() {
   const ambientStore = useAmbientStore()
   const debug = useSyncExternalStore(subscribeDebug, getDebugSnapshot)
   const chat = useSyncExternalStore(subscribeChat, getChat)
+  // 面板挡住舞台左下角时收起来，收起后只留一个很小的入口。
+  const [collapsed, setCollapsed] = useState(false)
 
   // 生产构建里不显示，避免把调试面板带出去。
   if (!import.meta.env.DEV)
     return null
+
+  if (collapsed) {
+    return (
+      <button
+        type="button"
+        className="fixed bottom-2 left-2 z-50 rounded border bg-background/80 px-2 py-1 font-sans text-[11px] text-muted-foreground shadow backdrop-blur hover:text-foreground"
+        onClick={() => setCollapsed(false)}
+      >
+        监控
+      </button>
+    )
+  }
 
   const stage = debug.stage
   const events = [...debug.events].reverse().slice(0, 14)
@@ -76,13 +91,24 @@ export function DebugMonitor() {
     <div className="fixed bottom-2 left-2 z-50 flex max-h-[46vh] w-[520px] max-w-[calc(100vw-1rem)] flex-col gap-2 overflow-auto rounded-lg border bg-background/95 p-3 font-mono text-[11px] shadow-xl backdrop-blur">
       <div className="flex items-center justify-between">
         <span className="font-sans text-xs font-semibold">临时监控</span>
-        <button
-          type="button"
-          className="rounded border px-1.5 py-0.5 text-muted-foreground hover:text-foreground"
-          onClick={clearDebugEvents}
-        >
-          清空事件
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            className="rounded border px-1.5 py-0.5 text-muted-foreground hover:text-foreground"
+            onClick={clearDebugEvents}
+          >
+            清空事件
+          </button>
+          <button
+            type="button"
+            aria-label="隐藏监控"
+            title="隐藏监控"
+            className="rounded border px-1.5 py-0.5 text-muted-foreground hover:text-foreground"
+            onClick={() => setCollapsed(true)}
+          >
+            <X className="h-3 w-3" />
+          </button>
+        </div>
       </div>
 
       <section className="space-y-0.5">

@@ -157,3 +157,12 @@
     background: transparent;
     }
 }
+
+/* 无边框聊天窗口的拖动区：标题栏可拖动，按钮保持可点击。 */
+.app-drag {
+  -webkit-app-region: drag;
+}
+
+.app-no-drag {
+  -webkit-app-region: no-drag;
+}

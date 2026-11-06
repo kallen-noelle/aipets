@@ -31,9 +31,9 @@ import { requestAmbientProgram } from '@/llm/ambient-service'
 /**
  * 回复结束后等待多久尝试更新环境编排。
  *
- * 临时测试值：30 秒；正式设计为 90 秒。测试结束后改回 90_000。
+ * 回复结束后等待 90 秒再请求环境编排，避免用户连续对话时频繁调用模型。
  */
-const AMBIENT_REPLY_DELAY_MS = 30_000
+const AMBIENT_REPLY_DELAY_MS = 90_000
 
 export interface CharacterStageProps {
   characterId: string

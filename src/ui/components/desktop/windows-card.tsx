@@ -81,7 +81,7 @@ export function WindowsCard() {
     }
   }
 
-  const opened = windows.filter(item => item.open)
+  const opened = windows.filter(item => item.visible)
 
   return (
     <SettingSection title="窗口与托盘" description="桌宠与聊天、设置是独立窗口，各自记住位置。">

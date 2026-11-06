@@ -13,7 +13,6 @@
 const os = require('node:os')
 const path = require('node:path')
 const process = require('node:process')
-
 const {
   app,
   BrowserWindow,
@@ -59,9 +58,9 @@ const IS_DEV_MODE = Boolean(process.env.AIPETS_URL) || process.defaultApp === tr
 
 // main 角色的画布是 640 x 360（characters.config.json 的 canvas），窗口作为
 // 角色的相框保持同样的纵横比，视频以 contain 填充就不会被裁剪。
-const WINDOW_DEFAULTS = { width: 640, height: 360 }
-const MIN_WIDTH = 240
-const MIN_HEIGHT = 320
+const WINDOW_DEFAULTS = { width: 480, height: 270 }
+const MIN_WIDTH = 135
+const MIN_HEIGHT = 240
 
 // 两个存储都保存主进程状态，渲染层从不写这些文件。
 const preferencesStore = new JsonStore(
@@ -146,15 +145,30 @@ function petStateKey(entry) {
   return entry.instanceId ?? 'default'
 }
 
-function readPetBounds(key) {
+/**
+ * 把缩放换算成窗口尺寸。
+ *
+ * 尺寸永远由基准画布乘缩放算出，不从 `getBounds()` 回读。Windows 在 150%
+ * 缩放下回读值会比设置值多 1～2 DIP，把它再写回窗口就会一次比一次大。
+ */
+function petWindowSize(scale) {
+  const factor = Number.isFinite(scale) && scale > 0 ? scale : 1
+  return {
+    // 与 createPetWindow 的 minWidth / minHeight 保持一致，避免小缩放时
+    // 保存的尺寸和实际窗口尺寸对不上。
+    width: Math.max(MIN_WIDTH, Math.round(WINDOW_DEFAULTS.width * factor)),
+    height: Math.max(MIN_HEIGHT, Math.round(WINDOW_DEFAULTS.height * factor)),
+  }
+}
+
+function readPetState(key) {
   const pets = windowStateStore.get().pets
   const state = pets && typeof pets === 'object' ? pets[key] : undefined
 
   return {
-    width: Number.isFinite(state?.width) ? state.width : WINDOW_DEFAULTS.width,
-    height: Number.isFinite(state?.height) ? state.height : WINDOW_DEFAULTS.height,
     x: Number.isFinite(state?.x) ? state.x : undefined,
     y: Number.isFinite(state?.y) ? state.y : undefined,
+    scale: Number.isFinite(state?.scale) ? state.scale : 1,
   }
 }
 
@@ -162,9 +176,12 @@ function savePetBounds(entry) {
   if (entry.window.isDestroyed())
     return
 
-  // 最大化窗口报告的是还原后的边界，状态保持可用。
+  // 只记位置与缩放。宽高由缩放推导，避免把回读出来的偏差持久化下去。
+  const bounds = entry.window.getNormalBounds()
   const pets = windowStateStore.get().pets ?? {}
-  windowStateStore.set({ pets: { ...pets, [petStateKey(entry)]: entry.window.getNormalBounds() } })
+  windowStateStore.set({
+    pets: { ...pets, [petStateKey(entry)]: { x: bounds.x, y: bounds.y, scale: entry.scale || 1 } },
+  })
 }
 
 function saveAllPetBounds() {
@@ -279,6 +296,14 @@ function flingPetWindow(entry, velocity) {
   let vy = velocity.y
   let previous = Date.now()
 
+  // 尺寸只在开始甩动时按缩放算一次，循环里不再回读窗口。Windows 在 150%
+  // 缩放下 getBounds 会比设置值多 1～2 DIP，反复回读会让窗口一边反弹一边
+  // 变大。位置也在局部变量里累加。
+  const start = entry.window.getBounds()
+  const { width, height } = petWindowSize(entry.scale)
+  let currentX = start.x
+  let currentY = start.y
+
   entry.flingTimer = setInterval(() => {
     if (entry.window.isDestroyed()) {
       clearInterval(entry.flingTimer)
@@ -290,15 +315,14 @@ function flingPetWindow(entry, velocity) {
     const dt = Math.min(0.05, (now - previous) / 1000)
     previous = now
 
-    const bounds = entry.window.getBounds()
-    const area = screen.getDisplayMatching(bounds).workArea
+    const area = screen.getDisplayMatching({ x: currentX, y: currentY, width, height }).workArea
     const minX = area.x
     const minY = area.y
-    const maxX = area.x + area.width - bounds.width
-    const maxY = area.y + area.height - bounds.height
+    const maxX = area.x + area.width - width
+    const maxY = area.y + area.height - height
 
-    let x = bounds.x + vx * dt
-    let y = bounds.y + vy * dt
+    let x = currentX + vx * dt
+    let y = currentY + vy * dt
 
     if (x <= minX) {
       x = minX
@@ -322,12 +346,14 @@ function flingPetWindow(entry, velocity) {
     vx *= decay
     vy *= decay
 
-    // 与拖拽一样显式固定宽高，避免 Windows 高 DPI 下惯性滑动时窗口变大。
+    currentX = Math.round(x)
+    currentY = Math.round(y)
+
     entry.window.setBounds({
-      x: Math.round(x),
-      y: Math.round(y),
-      width: bounds.width,
-      height: bounds.height,
+      x: currentX,
+      y: currentY,
+      width,
+      height,
     })
 
     if (Math.hypot(vx, vy) < DRAG_STOP_SPEED) {
@@ -345,13 +371,15 @@ function startPetDrag(entry) {
   stopPetDrag(entry, { fling: false })
   const cursor = screen.getCursorScreenPoint()
   const bounds = entry.window.getBounds()
+  const size = petWindowSize(entry.scale)
   entry.dragOrigin = {
     cursor,
     window: {
       x: bounds.x,
       y: bounds.y,
-      width: bounds.width,
-      height: bounds.height,
+      // 尺寸按缩放算，不用回读值，拖动时窗口不会缓慢变大。
+      width: size.width,
+      height: size.height,
     },
   }
   entry.dragSamples = [{ x: cursor.x, y: cursor.y, time: Date.now() }]
@@ -381,8 +409,12 @@ function stopPetDrag(entry, { fling = true } = {}) {
     flingPetWindow(entry, dragReleaseVelocity(samples))
 }
 
-/** 桌面聊天悬浮球的窗口尺寸。 */
-const BALL_SIZE = 64
+/**
+ * 桌面聊天悬浮球的窗口尺寸。
+ *
+ * 球体本身 56px，窗口留一圈透明边距放阴影与 hover 放大。
+ */
+const BALL_SIZE = 72
 
 /** 把矩形夹回最近的显示器工作区，保证球不会被拖出屏幕。 */
 function clampBallBounds(bounds) {
@@ -514,12 +546,14 @@ function toggleChatWindow() {
 
   const existing = secondaryWindows.resolve('chat')
   if (existing && existing.isVisible()) {
-    secondaryWindows.close('chat')
+    // 隐藏而不是关闭，下次点击直接显示，不再重新加载页面。
+    secondaryWindows.hide('chat')
     return
   }
 
-  secondaryWindows.open('chat')
-  const chat = secondaryWindows.resolve('chat')
+  // 取窗口但不立刻显示：先把窗口定位到球旁边，再 show，避免先在旧位置
+  // 闪一帧再跳过来。
+  const chat = secondaryWindows.open('chat', undefined, { show: false })
   if (!chat || chat.isDestroyed())
     return
 
@@ -536,6 +570,20 @@ function toggleChatWindow() {
   y = Math.min(Math.max(y, area.y), area.y + area.height - bounds.height)
 
   chat.setBounds({ x, y, width: bounds.width, height: bounds.height })
+
+  if (chat.webContents.isLoading()) {
+    chat.once('ready-to-show', () => {
+      if (chat.isDestroyed())
+        return
+
+      chat.show()
+      chat.focus()
+    })
+  }
+  else {
+    chat.show()
+    chat.focus()
+  }
 }
 
 
@@ -558,8 +606,9 @@ function applyPetScale(entry, scale) {
     return
 
   entry.scale = factor
-  const width = Math.round(WINDOW_DEFAULTS.width * factor)
-  const height = Math.round(WINDOW_DEFAULTS.height * factor)
+
+  // 尺寸只由基准画布乘缩放决定，不回读窗口，避免高 DPI 下的累计误差。
+  const { width, height } = petWindowSize(factor)
   const x = Math.round(bounds.x + (bounds.width - width) / 2)
   const y = Math.round(bounds.y + bounds.height - height)
 
@@ -585,20 +634,21 @@ function applyClickThrough(value) {
 
 /** 新桌宠的起始边界，每个新窗口从前一个错开。 */
 function petWindowBounds(entry, cascade) {
-  const saved = readPetBounds(petStateKey(entry))
+  const saved = readPetState(petStateKey(entry))
+  const size = petWindowSize(saved.scale)
   if (Number.isFinite(saved.x) && Number.isFinite(saved.y))
-    return saved
+    return { ...size, x: saved.x, y: saved.y }
 
   const area = screen.getPrimaryDisplay().workArea
   const anchor = primaryPetWindow()?.getBounds()
-  const baseX = anchor?.x ?? Math.round(area.x + (area.width - saved.width) / 2)
-  const baseY = anchor?.y ?? Math.round(area.y + (area.height - saved.height) / 2)
+  const baseX = anchor?.x ?? Math.round(area.x + (area.width - size.width) / 2)
+  const baseY = anchor?.y ?? Math.round(area.y + (area.height - size.height) / 2)
   const step = 32 * cascade
 
   return {
-    ...saved,
-    x: Math.min(Math.max(baseX + step, area.x), area.x + area.width - saved.width),
-    y: Math.min(Math.max(baseY + step, area.y), area.y + area.height - saved.height),
+    ...size,
+    x: Math.min(Math.max(baseX + step, area.x), area.x + area.width - size.width),
+    y: Math.min(Math.max(baseY + step, area.y), area.y + area.height - size.height),
   }
 }
 
@@ -620,7 +670,8 @@ function createPetWindow({ instanceId = null, cascade = 0, withDevTools = false 
     dragTimer: null,
     dragSamples: [],
     flingTimer: null,
-    scale: 0,
+    // 以保存的缩放为准，窗口尺寸由它推导；渲染层上报后不会再次改变尺寸。
+    scale: readPetState(instanceId ?? 'default').scale,
   }
   const bounds = petWindowBounds(entry, cascade)
 
@@ -1059,6 +1110,17 @@ else {
 
     // 桌面版常驻聊天悬浮球，点击切换聊天窗口。
     createBallWindow()
+    // 预创建聊天窗口并保持隐藏：点击悬浮球时直接显示，避免首次点击等待页面加载。
+    const chatWindow = secondaryWindows.preload('chat')
+
+    // 聊天窗口的关闭按钮、Alt+F4 都改为隐藏，下次点击悬浮球仍然秒开。
+    chatWindow.on('close', (event) => {
+      if (isQuitting)
+        return
+
+      event.preventDefault()
+      secondaryWindows.hide('chat')
+    })
 
     createTray()
     registerShortcuts()

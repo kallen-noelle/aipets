@@ -1,8 +1,8 @@
 /**
  * 桌面版聊天悬浮球窗口。
  *
- * 独立的 64x64 透明置顶窗口：左键拖动由主进程移动窗口本身，
- * 位移不足 3px 视为点击，打开或收起聊天窗口。
+ * 独立的透明置顶小窗口：左键拖动由主进程移动窗口本身，位移不足 3px 视为
+ * 点击，打开或收起聊天窗口。窗口比球体大一圈，留出阴影与放大动画的空间。
  */
 
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
@@ -15,7 +15,8 @@ const BALL_DRAG_THRESHOLD = 3
 export function ChatBallPage() {
   const bridge = getDesktopBridge()
   const [chatOpen, setChatOpen] = useState(false)
-  const dragRef = useRef<{ startX: number, startY: number, moved: boolean } | null>(null)
+  const [dragging, setDragging] = useState(false)
+  const dragRef = useRef<{ startX: number, startY: number, moved: boolean, started: boolean } | null>(null)
 
   useEffect(() => {
     const root = document.documentElement
@@ -28,9 +29,9 @@ export function ChatBallPage() {
       return
 
     let disposed = false
-    const apply = (list: { kind: string, open: boolean }[]) => {
+    const apply = (list: { kind: string, visible: boolean }[]) => {
       if (!disposed)
-        setChatOpen(list.some(item => item.kind === 'chat' && item.open))
+        setChatOpen(list.some(item => item.kind === 'chat' && item.visible))
     }
     void bridge.listWindows().then(apply)
     const off = bridge.onWindowsChanged(apply)
@@ -44,8 +45,7 @@ export function ChatBallPage() {
     if (event.button !== 0)
       return
 
-    dragRef.current = { startX: event.screenX, startY: event.screenY, moved: false }
-    bridge?.beginBallDrag()
+    dragRef.current = { startX: event.screenX, startY: event.screenY, moved: false, started: false }
 
     // 窗口会被主进程跟着光标移动，监听挂在 window 上比按钮捕获更稳。
     window.addEventListener('pointermove', onPointerMove)
@@ -64,6 +64,14 @@ export function ChatBallPage() {
     ) {
       drag.moved = true
     }
+
+    // 判定为拖动后才让主进程跟随光标。点击时手抖 1～2px 不会带动窗口，
+    // 否则球会先被推开一点再弹回来，看起来像“原地震动”。
+    if (drag.moved && !drag.started) {
+      drag.started = true
+      setDragging(true)
+      bridge?.beginBallDrag()
+    }
   }
 
   const finishDrag = (toggle: boolean) => {
@@ -72,10 +80,13 @@ export function ChatBallPage() {
       return
 
     dragRef.current = null
+    setDragging(false)
     window.removeEventListener('pointermove', onPointerMove)
     window.removeEventListener('pointerup', onPointerUp)
     window.removeEventListener('pointercancel', onPointerCancel)
-    bridge?.endBallDrag()
+
+    if (drag.started)
+      bridge?.endBallDrag()
 
     if (toggle && !drag.moved)
       void bridge?.toggleChatWindow()
@@ -85,13 +96,13 @@ export function ChatBallPage() {
   const onPointerCancel = () => finishDrag(false)
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center p-1">
+    <div className="flex h-screen w-screen items-center justify-center">
       <button
         type="button"
         aria-label={chatOpen ? '收起聊天' : '打开聊天'}
         aria-pressed={chatOpen}
-        className={`flex size-14 touch-none select-none cursor-grab items-center justify-center rounded-full border border-border bg-card/95 text-foreground shadow-lg backdrop-blur transition-colors hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 active:cursor-grabbing ${
-          chatOpen ? 'ring-2 ring-primary/40' : ''
+        className={`group relative flex size-10 touch-none select-none items-center justify-center rounded-full border border-border bg-card text-foreground  transition-transform duration-150 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-95 ${
+          dragging ? 'scale-95 cursor-grabbing' : 'cursor-grab'
         }`}
         onPointerDown={onPointerDown}
         onKeyDown={(event) => {
@@ -101,7 +112,10 @@ export function ChatBallPage() {
           }
         }}
       >
-        <MessageCircle className="size-6" />
+        <MessageCircle className="size-5 drop-shadow-sm" strokeWidth={2.2} />
+        {chatOpen
+          ? <span className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full bg-emerald-400 ring-2 ring-background" />
+          : null}
       </button>
     </div>
   )

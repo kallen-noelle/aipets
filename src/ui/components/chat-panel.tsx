@@ -248,18 +248,9 @@ export function ChatPanel({ onBackToPet, onClose }: ChatPanelProps) {
           onChange={event => selectModel(event.target.value)}
         />
 
-        <div className="ml-auto flex items-center gap-2">
-          <label className="flex items-center gap-1 text-xs text-muted-foreground">
-            <input
-              type="checkbox"
-              checked={ttsEnabled}
-              onChange={event => updateSpeech({ ttsEnabled: event.target.checked })}
-            />
-            朗读回复
-          </label>
-
-          {onClose
-            ? (
+        {onClose
+          ? (
+              <div className="ml-auto">
                 <button
                   type="button"
                   aria-label="收起聊天"
@@ -268,9 +259,9 @@ export function ChatPanel({ onBackToPet, onClose }: ChatPanelProps) {
                 >
                   <X className="size-4" />
                 </button>
-              )
-            : null}
-        </div>
+              </div>
+            )
+          : null}
       </header>
 
       <ChatMessageList
@@ -339,6 +330,16 @@ export function ChatPanel({ onBackToPet, onClose }: ChatPanelProps) {
           >
             <Trash2 className="h-3.5 w-3.5" /> 清空
           </button>
+
+          {/* 朗读开关和语音、贴纸放在同一行，避免占用顶部选择栏。 */}
+          <label className="flex items-center gap-1 self-center text-xs text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={ttsEnabled}
+              onChange={event => updateSpeech({ ttsEnabled: event.target.checked })}
+            />
+            朗读回复
+          </label>
 
           {onBackToPet
             ? (
