@@ -11,6 +11,7 @@
 import {
   copyFileSync,
   existsSync,
+  linkSync,
   mkdirSync,
   readdirSync,
   rmSync,
@@ -36,7 +37,24 @@ copyFileSync(configFile, join(target, 'characters.config.json'))
 
 let files = 1
 let bytes = statSync(configFile).size
+let hardlinks = 0
+let copied = 0
 const skipped = []
+
+/**
+ * 优先硬链接，避免在 /dev/shm 构建环境里把 660MB 素材复制第二份。
+ * 跨文件系统或平台不支持硬链接时退回普通复制。
+ */
+function placeFile(from, to) {
+  try {
+    linkSync(from, to)
+    hardlinks += 1
+  }
+  catch {
+    copyFileSync(from, to)
+    copied += 1
+  }
+}
 
 for (const entry of readdirSync(source, { withFileTypes: true })) {
   if (!entry.isDirectory())
@@ -59,12 +77,15 @@ for (const entry of readdirSync(source, { withFileTypes: true })) {
     if (!statSync(from).isFile())
       continue
 
-    copyFileSync(from, join(destination, file))
+    placeFile(from, join(destination, file))
     files += 1
     bytes += statSync(from).size
   }
 }
 
-console.log(`已复制 ${files} 个文件 / ${(bytes / 1024 / 1024).toFixed(1)} MB 到 out/characters`)
+console.log(
+  `已复制 ${files} 个文件 / ${(bytes / 1024 / 1024).toFixed(1)} MB 到 out/characters`
+  + `（硬链接 ${hardlinks}，普通复制 ${copied}）`,
+)
 if (skipped.length > 0)
   console.log(`跳过 ${skipped.length} 个非 webm 文件（mp4、提示词等）`)
