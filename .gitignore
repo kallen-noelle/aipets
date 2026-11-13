@@ -13,6 +13,11 @@ dist-ssr
 release
 *.local
 
+# 角色生成脚本的中间产物（任务状态、日志、参考帧）
+assets/characters/*/tmp/
+.env
+.env.*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -25,3 +30,5 @@ release
 *.sw?
 
 docs
+source
+__pycache__/
