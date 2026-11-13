@@ -1,15 +1,16 @@
 /**
  * 记忆自动提取。
  *
- * 每轮对话结束后，让模型按固定 JSON 输出挑出值得长期记住的信息。提取在
- * 后台进行，不阻塞回复；失败只记录日志，不影响对话。
+ * 放在 llm 层：这一步要调用模型，而记忆域本身不应该依赖模型客户端。
+ * 每轮对话结束后在后台运行，失败只记录状态，不影响回复。
  */
 
 import { HumanMessage, SystemMessage } from 'langchain'
 import { z } from 'zod'
 
-import { useMemoryStore } from '@/config/domains/memory'
-import { createChatModel } from '@/llm/client'
+import { useMemoryStore, type MemoryScope, type UpsertResult } from '@/config/domains/memory'
+
+import { createChatModel } from './client'
 
 /** 模型必须按这个结构返回，保证写入记忆库的条目形状稳定。 */
 const extractionSchema = z.object({
@@ -17,18 +18,21 @@ const extractionSchema = z.object({
     name: z.string().describe('简短名称，例如“主人的口味”'),
     description: z.string().describe('一句话说明'),
     content: z.string().describe('完整描述，包含上下文'),
+    // 置信度越界或类型不对时丢弃该字段，不让整批提取失败。
+    confidence: z.number().optional().catch(undefined).describe('0 到 1 的把握程度，不确定时省略'),
   })).describe('值得长期记住的新信息；没有就返回空数组'),
 })
 
 export type ExtractedMemory = z.infer<typeof extractionSchema>['memories'][number]
 
-const JSON_SHAPE = '{"memories":[{"name":"简短名称","description":"一句话说明","content":"完整描述"}]}'
+const JSON_SHAPE = '{"memories":[{"name":"简短名称","description":"一句话说明","content":"完整描述","confidence":0.8}]}'
 
 const SYSTEM_PROMPT = [
   '你负责整理对话记忆。',
   '只提取长期有效的事实或偏好，例如姓名、习惯、喜好、约定。',
   '忽略寒暄、临时情绪与一次性的闲聊内容。',
   'name 要简短且能唯一标识这条信息，description 一句话，content 补充细节。',
+  'confidence 是 0 到 1 的小数，表示这条信息的确定程度；推测出来的内容给低分。',
   // 只用提示词约束 JSON，不依赖 response_format，兼容只支持基础接口的提供商。
   `只输出 JSON，不要解释。格式：${JSON_SHAPE}。没有新信息时输出 {"memories":[]}。`,
 ].join('\n')
@@ -72,33 +76,18 @@ export async function extractMemories(
 /**
  * 提取并写入记忆库。
  *
- * 同名条目视为已知信息，不重复写入。指定实例标识时条目只属于该实例。
+ * 写入与工具通道共用同一套 upsert 规则：同名手动条目不会被覆盖，同名自动
+ * 条目按置信度与更新时间决定是否更新。
  */
 export async function extractAndRemember(
   userText: string,
   assistantText: string,
-  instanceId?: string,
-): Promise<number> {
+  scope: MemoryScope = {},
+): Promise<UpsertResult> {
   const extracted = await extractMemories(userText, assistantText)
-  if (extracted.length === 0)
-    return 0
-
-  const store = useMemoryStore.getState()
-  const known = new Set(
-    store.entries
-      .filter(entry => !entry.instanceId || entry.instanceId === instanceId)
-      .map(entry => entry.name),
-  )
-  let added = 0
-
-  for (const item of extracted) {
-    if (known.has(item.name))
-      continue
-
-    known.add(item.name)
-    store.add({ ...item, ...(instanceId ? { instanceId } : {}) })
-    added++
+  if (extracted.length === 0) {
+    return { entries: useMemoryStore.getState().entries, added: 0, updated: 0 }
   }
 
-  return added
+  return useMemoryStore.getState().upsertExtracted(extracted, scope)
 }

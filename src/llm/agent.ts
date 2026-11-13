@@ -13,13 +13,13 @@ import {
 import type { CharacterDefinition } from '@/character/types'
 import { cardOverride } from '@/config/domains/card'
 import { useChatConfigStore } from '@/config/domains/chat'
-import { memorySummary, useMemoryStore } from '@/config/domains/memory'
 import { activeRecipePrompt, recipeProposalPrompt } from '@/config/domains/recipes'
 import { useVisionStore } from '@/config/domains/vision'
 import type { AgentTool } from '@/mcp/tools'
 
 import { createChatModel } from './client'
-import { buildSystemPrompt } from './prompts'
+import { memoryInjectionMiddleware } from './memory-middleware'
+import { buildSystemPrompt, type StickerHint } from './prompts'
 
 /** 摘要后保留的最近消息条数。 */
 const KEEP_MESSAGES = 8
@@ -48,6 +48,8 @@ export interface AgentOptions {
   hasImage?: boolean
   /** 本轮是否接了工具，工具轮次可按开关换视觉模型。 */
   hasTools?: boolean
+  /** 本轮允许发送的表情候选，空数组表示不发。 */
+  stickers?: StickerHint[]
 }
 
 export function createCharacterAgent(
@@ -69,15 +71,16 @@ export function createCharacterAgent(
   const { summaryThreshold } = useChatConfigStore.getState()
   const persona = override.persona?.trim() || character.persona
   const name = override.name?.trim() || character.name
-  const memories = useMemoryStore.getState().longTermEnabled ? memorySummary(instanceId) : ''
   // 配方内容与提议说明合并成一段附加要求。
   const recipe = [activeRecipePrompt(), recipeProposalPrompt()].filter(Boolean).join('\n')
 
   const agent = createAgent({
     model,
     tools,
-    systemPrompt: buildSystemPrompt(name, persona, memories, recipe),
+    systemPrompt: buildSystemPrompt(name, persona, recipe, options.stickers ?? []),
     middleware: [
+      // 记忆作为独立系统片段注入，不混进角色卡的人设文本。
+      memoryInjectionMiddleware({ instanceId, characterId: character.id }),
       summarizationMiddleware({
         model,
         // 消息数达到阈值时压缩，保留最近若干条，保证上下文连贯。

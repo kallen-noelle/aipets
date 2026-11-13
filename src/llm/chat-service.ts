@@ -9,11 +9,13 @@ import { AIMessage, HumanMessage, type BaseMessage } from 'langchain'
 import type { CharacterDefinition } from '@/character/types'
 import { useChatConfigStore } from '@/config/domains/chat'
 import type { ChatMessage } from '@/config/domains/sessions'
+import { rollStickerCandidates } from '@/config/domains/stickers'
+import { loadAgentTools } from '@/mcp/tools'
 
 import { createCharacterAgent } from './agent'
 import { builtinTools } from './builtin-tools'
 import { MissingConfigError } from './client'
-import { loadAgentTools } from '@/mcp/tools'
+import { memoryTools } from './memory-tools'
 
 export interface ChatStreamHandlers {
   onToken: (text: string) => void
@@ -97,12 +99,19 @@ export async function streamChat(options: StreamChatOptions): Promise<void> {
 
   let agent: ReturnType<typeof createCharacterAgent>
   try {
-    // 内置工具与 MCP 服务器在这里合并成可用工具。
-    const tools = [...builtinTools(character.id), ...await loadAgentTools()]
+    // 内置工具、记忆工具与 MCP 服务器在这里合并成可用工具。
+    const tools = [
+      ...builtinTools(character.id),
+      ...memoryTools({ instanceId, characterId: character.id }),
+      ...await loadAgentTools(),
+    ]
+    // 表情包先按频率掷骰，命中后交给角色判断语境是否贴切。
+    const stickers = rollStickerCandidates(character.id)
     agent = createCharacterAgent(character, tools, {
       instanceId,
       hasImage: Boolean(imageUrl),
       hasTools: tools.length > 0,
+      stickers,
     })
   }
   catch (error) {

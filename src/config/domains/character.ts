@@ -10,6 +10,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 import { persistOptions } from '../persistence'
+import { useMemoryStore } from './memory'
 
 export const instanceAppearanceSchema = z.object({
   scale: z.number().min(0.4).max(3),
@@ -144,7 +145,7 @@ function mergeStored(persisted: unknown, current: CharacterState): CharacterStat
 
 export const useCharacterStore = create<CharacterState>()(
   persist(
-    set => ({
+    (set, get) => ({
       instances: [{
         id: LEGACY_INSTANCE_ID,
         characterId: 'main',
@@ -177,19 +178,24 @@ export const useCharacterStore = create<CharacterState>()(
         instances: state.instances.map(item => item.id === id ? { ...item, ...patch } : item),
       })),
 
-      removeInstance: id => set((state) => {
+      removeInstance: (id) => {
         // 至少保留一个实例，舞台不能完全空掉。
-        if (state.instances.length <= 1)
-          return state
+        if (get().instances.length <= 1)
+          return
 
-        const instances = state.instances.filter(item => item.id !== id)
-        return {
-          instances,
-          activeInstanceId: state.activeInstanceId === id
-            ? instances[0].id
-            : state.activeInstanceId,
-        }
-      }),
+        set((state) => {
+          const instances = state.instances.filter(item => item.id !== id)
+          return {
+            instances,
+            activeInstanceId: state.activeInstanceId === id
+              ? instances[0].id
+              : state.activeInstanceId,
+          }
+        })
+
+        // 实例的专属记忆随实例一起删除，避免留下无处可归的孤儿条目。
+        useMemoryStore.getState().removeByInstance(id)
+      },
 
       setActiveInstance: id => set(state => (
         state.instances.some(item => item.id === id) ? { activeInstanceId: id } : state

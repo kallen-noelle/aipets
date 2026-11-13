@@ -7,6 +7,7 @@
 
 import { enableCrossWindowSync } from '@/config/cross-window'
 import { applyTheme, useUiStore, watchSystemTheme } from '@/config/domains/ui'
+import { startReminderWatcher } from '@/reminder/watcher'
 import { ensureWeatherFresh } from '@/weather/service'
 
 export function bootstrap(): void {
@@ -20,4 +21,6 @@ export function bootstrap(): void {
   enableCrossWindowSync()
   // 天气只影响提示词，启动时后台刷新一次。
   void ensureWeatherFresh()
+  // 提醒轮询持续运行，窗口刷新后也能补发到点的条目。
+  startReminderWatcher()
 }

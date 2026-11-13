@@ -4,25 +4,26 @@
  * 界面只订阅快照并调用 `send` / `stop`，不参与任何对话流程决策。
  */
 
+import { stopPerformance } from '@/audio/performance'
 import { getCharacter, loadCharactersCatalog } from '@/character/catalog'
 import type { CharacterDefinition } from '@/character/types'
 import { cardOverride } from '@/config/domains/card'
 import { activeInstance } from '@/config/domains/character'
-import { useMemoryStore } from '@/config/domains/memory'
+import { useMemoryStore, briefMemoryError } from '@/config/domains/memory'
 import {
   activeSessionFor,
   ensureSession,
   useSessionsStore,
 } from '@/config/domains/sessions'
 import { useSpeechStore } from '@/config/domains/speech'
-import { pickSticker, stickerSource } from '@/config/domains/stickers'
+import { stickerByName, stickerSource, takeStickerMarker } from '@/config/domains/stickers'
 import { recordDebugEvent } from '@/debug/monitor'
 import { emitPetEvent } from '@/desktop/pet-events'
-import { extractAndRemember } from '@/memory/extractor'
 import { speak } from '@/speech/tts'
 
 import { streamChat } from './chat-service'
 import { requestPerformancePlan } from './director-service'
+import { extractAndRemember } from './memory-extractor'
 
 export interface ChatSnapshot {
   streaming: string
@@ -108,23 +109,40 @@ export class ChatController {
             tools = names
           },
           onDone: (full) => {
-            recordDebugEvent('chat', 'done', `回复 ${full.length} 字`)
+            // 表情标记不进入正文，单独作为一张图片消息追加。
+            const { text: reply, name: stickerName } = takeStickerMarker(full)
+            recordDebugEvent('chat', 'done', `回复 ${reply.length} 字`)
             useSessionsStore.getState().appendMessage(sessionId, {
               role: 'assistant',
-              content: full,
+              content: reply,
               ...(tools.length > 0 ? { tools } : {}),
             })
             this.update({ streaming: '', busy: false, error: null })
 
-            const sticker = pickSticker()
+            // 只有主角拥有表情包，其他角色取不到候选也不会命中。
+            const sticker = stickerName ? stickerByName(instance.characterId, stickerName) : null
             if (sticker)
               useSessionsStore.getState().appendMessage(sessionId, { role: 'assistant', content: '', imageUrl: stickerSource(sticker) })
 
-            // 记忆提取在后台进行，失败不影响这轮对话。
+            // 记忆提取在后台进行，失败只记录状态，不影响这轮对话。
             if (text && useMemoryStore.getState().longTermEnabled) {
-              void extractAndRemember(text, full, instance.id).catch((error) => {
-                console.warn('[aipets] 记忆提取失败', error)
-              })
+              const scope = { instanceId: instance.id, characterId: instance.characterId }
+              void extractAndRemember(text, reply, scope)
+                .then((result) => {
+                  useMemoryStore.getState().recordExtraction({
+                    at: Date.now(),
+                    ok: true,
+                    count: result.added + result.updated,
+                  })
+                })
+                .catch((error) => {
+                  useMemoryStore.getState().recordExtraction({
+                    at: Date.now(),
+                    ok: false,
+                    error: briefMemoryError(error),
+                  })
+                  console.warn('[aipets] 记忆提取失败', error)
+                })
             }
 
             // 导演与语音并行，失败时规则导演继续。
@@ -132,13 +150,13 @@ export class ChatController {
               character,
               instanceId: instance.id,
               userText: text,
-              replyText: full,
+              replyText: reply,
             }).then((steps) => {
               if (steps?.length)
                 emitPetEvent({ kind: 'perform', instanceId: instance.id, steps })
             })
 
-            const speaking = this.speakIfEnabled(full)
+            const speaking = this.speakIfEnabled(reply)
             if (speaking) {
               void speaking.finally(() => {
                 emitPetEvent({ kind: 'reply-ended', instanceId: instance.id })
@@ -170,6 +188,8 @@ export class ChatController {
     this.controller = null
     this.stopSpeaking?.()
     this.stopSpeaking = null
+    // 弹琴与唱歌也在这条停止链路上，保证一个按钮能停掉所有声音。
+    stopPerformance()
     emitPetEvent({ kind: 'speech-ended' })
     this.update({ streaming: '', busy: false, error: null })
   }

@@ -23,8 +23,10 @@ import { useImageStore } from './domains/image'
 import { useMcpStore } from './domains/mcp'
 import { useMemoryStore } from './domains/memory'
 import { useModelsStore } from './domains/models'
+import { useMusicStore } from './domains/music'
 import { useProvidersStore } from './domains/providers'
 import { useRecipesStore } from './domains/recipes'
+import { useRemindersStore } from './domains/reminders'
 import { useSessionsStore } from './domains/sessions'
 import { useSpeechStore } from './domains/speech'
 import { useStickersStore } from './domains/stickers'
@@ -61,4 +63,6 @@ export function enableCrossWindowSync(): void {
   syncAcrossWindows('affinity', useAffinityStore)
   syncAcrossWindows('weather', useWeatherStore)
   syncAcrossWindows('ambient', useAmbientStore)
+  syncAcrossWindows('music', useMusicStore)
+  syncAcrossWindows('reminders', useRemindersStore)
 }

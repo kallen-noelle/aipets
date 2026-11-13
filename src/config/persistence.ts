@@ -26,16 +26,18 @@ const storage: StateStorage = {
   },
 }
 
-export function persistOptions<T>(
+export function persistOptions<T, P = T>(
   domain: string,
   version = 1,
-  merge?: PersistOptions<T, T>['merge'],
-): PersistOptions<T, T> {
+  merge?: PersistOptions<T, P>['merge'],
+  migrate?: PersistOptions<T, P>['migrate'],
+): PersistOptions<T, P> {
   return {
     name: `${STORAGE_PREFIX}:${domain}`,
     version,
-    storage: createJSONStorage(() => storage),
+    storage: createJSONStorage<P>(() => storage),
     ...(merge ? { merge } : {}),
+    ...(migrate ? { migrate } : {}),
   }
 }
 

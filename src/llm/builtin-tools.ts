@@ -10,9 +10,14 @@ import axios from 'axios'
 
 import { useAffinityStore } from '@/config/domains/affinity'
 import { useHomeAssistantStore } from '@/config/domains/home-assistant'
+import { useMusicStore } from '@/config/domains/music'
 import { useRecipesStore } from '@/config/domains/recipes'
+import { useRemindersStore } from '@/config/domains/reminders'
 import { useWebSearchStore } from '@/config/domains/web-search'
 import type { AgentTool } from '@/mcp/tools'
+
+import { pianoTool, singingTool } from './music-tools'
+import { addReminderTool, listRemindersTool } from './reminder-tools'
 
 /** Tavily 搜索结果。 */
 interface TavilyResponse {
@@ -20,9 +25,7 @@ interface TavilyResponse {
   results?: Array<{ title?: string, url?: string, content?: string }>
 }
 
-function webSearchTool(): AgentTool {
-  const { apiKey } = useWebSearchStore.getState()
-
+function webSearchTool(apiKey: string): AgentTool {
   return tool(
     async ({ query, maxResults }) => {
       const response = await axios.post<TavilyResponse>(
@@ -49,8 +52,7 @@ function webSearchTool(): AgentTool {
   )
 }
 
-function homeAssistantTool(): AgentTool {
-  const { baseUrl, token } = useHomeAssistantStore.getState()
+function homeAssistantTool(baseUrl: string, token: string): AgentTool {
   const base = baseUrl.replace(/\/+$/, '')
 
   return tool(
@@ -114,19 +116,69 @@ function updateAffinityTool(characterId: string): AgentTool {
   )
 }
 
+/**
+ * 内置能力描述符。
+ *
+ * 新增能力只需往这里加一条：可用条件与创建逻辑放在同一处，不再往
+ * builtinTools 里追加 if 分支。create 返回 null 表示当前配置不满足条件。
+ */
+interface BuiltinCapability {
+  id: string
+  create: (characterId: string) => AgentTool | null
+}
+
+const BUILTIN_CAPABILITIES: BuiltinCapability[] = [
+  {
+    id: 'affinity',
+    create: characterId => updateAffinityTool(characterId),
+  },
+  {
+    id: 'web-search',
+    create: () => {
+      const { enabled, apiKey } = useWebSearchStore.getState()
+      return enabled && apiKey.trim() ? webSearchTool(apiKey) : null
+    },
+  },
+  {
+    id: 'home-assistant',
+    create: () => {
+      const { enabled, baseUrl, token } = useHomeAssistantStore.getState()
+      return enabled && baseUrl.trim() && token.trim()
+        ? homeAssistantTool(baseUrl, token)
+        : null
+    },
+  },
+  {
+    id: 'recipes',
+    create: () => (useRecipesStore.getState().proposalsEnabled ? proposeRecipeTool() : null),
+  },
+  {
+    id: 'piano',
+    create: () => {
+      const { enabled, pianoEnabled } = useMusicStore.getState()
+      return enabled && pianoEnabled ? pianoTool() : null
+    },
+  },
+  {
+    id: 'singing',
+    create: () => {
+      const { enabled, singingEnabled } = useMusicStore.getState()
+      return enabled && singingEnabled ? singingTool() : null
+    },
+  },
+  {
+    id: 'reminders',
+    create: () => (useRemindersStore.getState().enabled ? addReminderTool() : null),
+  },
+  {
+    id: 'reminder-list',
+    create: () => (useRemindersStore.getState().enabled ? listRemindersTool() : null),
+  },
+]
+
 /** 当前启用的内置工具。 */
 export function builtinTools(characterId: string): AgentTool[] {
-  const tools: AgentTool[] = [updateAffinityTool(characterId)]
-  const search = useWebSearchStore.getState()
-  if (search.enabled && search.apiKey.trim())
-    tools.push(webSearchTool())
-
-  const home = useHomeAssistantStore.getState()
-  if (home.enabled && home.baseUrl.trim() && home.token.trim())
-    tools.push(homeAssistantTool())
-
-  if (useRecipesStore.getState().proposalsEnabled)
-    tools.push(proposeRecipeTool())
-
-  return tools
+  return BUILTIN_CAPABILITIES
+    .map(capability => capability.create(characterId))
+    .filter((item): item is AgentTool => item !== null)
 }
