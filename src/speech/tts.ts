@@ -100,6 +100,26 @@ async function speakRemotely(text: string): Promise<() => void> {
   return cleanup
 }
 
+/** 当前正在播放的朗读停止函数，供音乐等其他音频打断。 */
+let activeStop: (() => void) | null = null
+
+/** 记录朗读句柄，同时保证只保留最新一条。 */
+function track(stop: () => void): () => void {
+  const wrapped = () => {
+    stop()
+    if (activeStop === wrapped)
+      activeStop = null
+  }
+  activeStop = wrapped
+  return wrapped
+}
+
+/** 打断当前朗读；没有朗读时什么也不做。 */
+export function stopSpeaking(): void {
+  activeStop?.()
+  activeStop = null
+}
+
 /**
  * 朗读一段文本。
  *
@@ -108,14 +128,14 @@ async function speakRemotely(text: string): Promise<() => void> {
 export async function speak(text: string): Promise<() => void> {
   const { engine } = useSpeechStore.getState()
   if (engine === 'local' && isLocalSpeechAvailable())
-    return speakLocally(text)
+    return track(speakLocally(text))
 
   try {
-    return await speakRemotely(text)
+    return track(await speakRemotely(text))
   }
   catch (error) {
     if (isLocalSpeechAvailable())
-      return speakLocally(text)
+      return track(speakLocally(text))
     throw error
   }
 }

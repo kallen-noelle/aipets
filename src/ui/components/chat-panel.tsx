@@ -18,12 +18,13 @@ import { useModelsStore } from '@/config/domains/models'
 import { useProvidersStore } from '@/config/domains/providers'
 import { useSessionsStore } from '@/config/domains/sessions'
 import { useSpeechStore } from '@/config/domains/speech'
-import { useStickersStore } from '@/config/domains/stickers'
+import { hasStickers, stickerSource, useStickersStore } from '@/config/domains/stickers'
 import { getDesktopBridge } from '@/desktop/bridge'
 import { generateImage } from '@/image/generate'
 import { chatController } from '@/llm/chat-controller'
 import { VoiceInput } from '@/speech/voice-input'
 import { ChatMessageList } from '@/ui/components/chat-message-list'
+import { InstrumentView } from '@/ui/components/instrument-view'
 import { Button } from '@/ui/components/ui/button'
 import { Input } from '@/ui/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/components/ui/select'
@@ -82,6 +83,8 @@ export function ChatPanel({ onBackToPet, onClose }: ChatPanelProps) {
 
   const instance = instances.find(item => item.id === activeInstanceId) ?? instances[0]
   const instanceId = instance?.id ?? ''
+  // 只有主角有表情包，其他角色不显示入口。
+  const stickerItems = instance && hasStickers(instance.characterId) ? stickers : []
   // 实例选择器显示序号与角色名，避免只看到资源标识。
   const instanceLabel = (characterId: string, index: number): string => {
     const name = characters.find(item => item.id === characterId)?.name ?? characterId
@@ -271,6 +274,9 @@ export function ChatPanel({ onBackToPet, onClose }: ChatPanelProps) {
 
       {/* 底部快捷工具行 + 输入区，独立于消息区保证贴底。 */}
       <footer className="mx-auto flex w-full max-w-3xl flex-col gap-2 px-4 pb-4">
+        {/* 弹琴或唱歌时显示琴键与歌词，停止后自动收起。 */}
+        <InstrumentView />
+
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -283,14 +289,18 @@ export function ChatPanel({ onBackToPet, onClose }: ChatPanelProps) {
               : <><Mic className="h-3.5 w-3.5" /> 语音</>}
           </button>
 
-          <button
-            type="button"
-            className={toolBtnClass}
-            disabled={!ready || snapshot.busy}
-            onClick={() => setStickerPickerOpen(value => !value)}
-          >
-            <ImageIcon className="h-3.5 w-3.5" /> 贴纸
-          </button>
+          {stickerItems.length > 0
+            ? (
+                <button
+                  type="button"
+                  className={toolBtnClass}
+                  disabled={!ready || snapshot.busy}
+                  onClick={() => setStickerPickerOpen(value => !value)}
+                >
+                  <ImageIcon className="h-3.5 w-3.5" /> 贴纸
+                </button>
+              )
+            : null}
 
           <button
             type="button"
@@ -350,22 +360,25 @@ export function ChatPanel({ onBackToPet, onClose }: ChatPanelProps) {
             : null}
         </div>
 
-        {stickerPickerOpen && stickers.length > 0
+        {stickerPickerOpen && stickerItems.length > 0
           ? (
               <div className="flex flex-wrap gap-2 rounded-2xl border bg-card p-2">
-                {stickers.map(sticker => (
+                {stickerItems.map(sticker => (
                   <button
                     key={sticker.id}
                     type="button"
                     className="h-14 w-14 overflow-hidden rounded-lg border transition hover:bg-accent"
+                    title={sticker.name}
                     onClick={() => {
-                      void chatController.send('', sticker.url)
+                      void chatController.send('', stickerSource(sticker))
                       setStickerPickerOpen(false)
                     }}
                   >
-                    {sticker.url
-                      ? <img src={sticker.url} alt={sticker.name} className="h-full w-full object-contain" />
-                      : sticker.name}
+                    <img
+                      src={stickerSource(sticker)}
+                      alt={sticker.name}
+                      className="h-full w-full object-contain"
+                    />
                   </button>
                 ))}
               </div>
