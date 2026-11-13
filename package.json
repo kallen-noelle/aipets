@@ -11,6 +11,7 @@
     "dev:electron": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on tcp:127.0.0.1:5173 && electron electron/main.cjs\"",
     "characters": "node scripts/build-characters.mjs",
     "build": "tsc -b && vite build",
+    "build:web": "npm run build && node scripts/copy-web-characters.mjs",
     "dist": "npm run build && electron-builder --win --config electron-builder.config.cjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
