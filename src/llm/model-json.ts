@@ -41,17 +41,27 @@ export function parseJsonObject(text: string): Record<string, unknown> | null {
   }
 }
 
-/** 给模型调用加超时，超时后中止请求。 */
+/**
+ * 给模型调用加超时，超时后中止请求。
+ *
+ * `onError` 用来记录真实失败原因；不传时保持原来的静默兜底行为。
+ */
 export async function withTimeout<T>(
   run: (signal: AbortSignal) => Promise<T>,
   timeoutMs: number,
+  onError?: (error: unknown, timedOut: boolean) => void,
 ): Promise<T | null> {
   const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  let timedOut = false
+  const timer = setTimeout(() => {
+    timedOut = true
+    controller.abort()
+  }, timeoutMs)
   try {
     return await run(controller.signal)
   }
-  catch {
+  catch (error) {
+    onError?.(error, timedOut)
     return null
   }
   finally {

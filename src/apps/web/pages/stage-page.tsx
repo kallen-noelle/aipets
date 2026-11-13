@@ -366,7 +366,16 @@ export function StagePage() {
           : null}
       </button>
 
-      <DebugMonitor />
+      {/* 每个实例一个独立监控面板，多实例互不覆盖。 */}
+      {visibleInstances.length > 0
+        ? (
+            <div className="pointer-events-auto fixed bottom-2 left-2 z-50 flex max-w-[calc(100vw-1rem)] items-end gap-2 overflow-x-auto">
+              {visibleInstances.map(instance => (
+                <DebugMonitor key={instance.id} instanceId={instance.id} />
+              ))}
+            </div>
+          )
+        : null}
     </div>
   )
 }

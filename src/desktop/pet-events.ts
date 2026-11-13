@@ -62,7 +62,7 @@ function isPetEvent(value: unknown): value is PetEvent {
 
 /** 发送事件。同页监听先收到，再走桌面桥或标签页广播。 */
 export function emitPetEvent(event: PetEvent): void {
-  recordDebugEvent('emit', event.kind, JSON.stringify(event))
+  recordDebugEvent('emit', event.kind, JSON.stringify(event), 'instanceId' in event ? event.instanceId : undefined)
 
   for (const listener of localListeners)
     listener(event)

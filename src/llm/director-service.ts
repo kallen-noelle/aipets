@@ -103,7 +103,7 @@ export async function requestPerformancePlan(request: DirectorRequest): Promise<
   const directorModel = useAnimationStore.getState().directorModel.trim()
     || (useModelsStore.getState().selected ?? '').trim()
   if (!directorModel) {
-    recordDebugEvent('director', 'skip', '导演模型与对话模型均为空')
+    recordDebugEvent('director', 'skip', '导演模型与对话模型均为空', request.instanceId)
     return null
   }
 
@@ -120,12 +120,12 @@ export async function requestPerformancePlan(request: DirectorRequest): Promise<
       lastReason: '',
       lastError: message,
     })
-    recordDebugEvent('director', 'model-error', message)
+    recordDebugEvent('director', 'model-error', message, request.instanceId)
     return null
   }
 
   const candidates = performCandidates(request.character)
-  recordDebugEvent('director', 'request', `${directorModel}｜候选 ${candidates.size}`)
+  recordDebugEvent('director', 'request', `${directorModel}｜候选 ${candidates.size}`, request.instanceId)
 
   const prompt = await systemPrompt(request)
   const messages = [
@@ -146,7 +146,7 @@ export async function requestPerformancePlan(request: DirectorRequest): Promise<
       lastReason: '',
       lastError: '导演请求失败或超时',
     })
-    recordDebugEvent('director', 'timeout', `超过 ${TIMEOUT_MS}ms 或请求失败`)
+    recordDebugEvent('director', 'timeout', `超过 ${TIMEOUT_MS}ms 或请求失败`, request.instanceId)
     return null
   }
 
@@ -158,7 +158,7 @@ export async function requestPerformancePlan(request: DirectorRequest): Promise<
       lastReason: '',
       lastError: '导演返回的内容不是合法计划',
     })
-    recordDebugEvent('director', 'bad-json', contentText(result.content).slice(0, 200))
+    recordDebugEvent('director', 'bad-json', contentText(result.content).slice(0, 200), request.instanceId)
     return null
   }
 
@@ -186,6 +186,7 @@ export async function requestPerformancePlan(request: DirectorRequest): Promise<
     'director',
     steps.length ? 'plan' : 'empty-plan',
     JSON.stringify({ clips: plan.data.clips, steps, reason: plan.data.reason }),
+    request.instanceId,
   )
 
   return steps.length ? steps : null

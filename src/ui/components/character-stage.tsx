@@ -23,7 +23,7 @@ import {
   useCharacterStore,
   type InstanceAppearance,
 } from '@/config/domains/character'
-import { publishStageDebug, recordDebugEvent } from '@/debug/monitor'
+import { publishStageDebug, recordDebugEvent, removeStageDebug } from '@/debug/monitor'
 import { getDesktopBridge } from '@/desktop/bridge'
 import { onPetEvent } from '@/desktop/pet-events'
 import { requestAmbientProgram } from '@/llm/ambient-service'
@@ -75,6 +75,18 @@ export function CharacterStage({
     // 桌宠窗口必须是完全透明的画布，见 index.css 的 pet-surface 规则。
     document.documentElement.classList.add('pet-surface')
 
+    // 先上报空快照，让监控面板能区分“舞台未挂载”和“素材加载中”。
+    publishStageDebug({
+      at: Date.now(),
+      instanceId: instanceId ?? '',
+      performing: false,
+      ambientActive: false,
+      ambientClipIndex: null,
+      ambientPaused: false,
+      state: null,
+      videos: [],
+    })
+
     let player: CharacterVideoPlayer | null = null
     let director: CharacterDirector | null = null
     let observer: AlphaHitboxObserver | null = null
@@ -122,12 +134,12 @@ export function CharacterStage({
     const applyAmbient = (program: AmbientProgram, generatedAt: number) => {
       if (director?.performingActive) {
         pendingAmbient = { program, generatedAt }
-        recordDebugEvent('ambient', 'deferred', `表演中，${program.clips.length} 个动作等待接管`)
+        recordDebugEvent('ambient', 'deferred', `表演中，${program.clips.length} 个动作等待接管`, instanceId)
         return
       }
 
       pendingAmbient = null
-      recordDebugEvent('ambient', 'start', `${program.clips.length} 个动作`)
+      recordDebugEvent('ambient', 'start', `${program.clips.length} 个动作`, instanceId)
       director?.startAmbient(program, ambientClipAt(program, generatedAt, Date.now()))
     }
 
@@ -181,7 +193,7 @@ export function CharacterStage({
       if (!longActions(character).length)
         return
 
-      recordDebugEvent('ambient', 'generate', `实例 ${instanceId} 开始生成`)
+      recordDebugEvent('ambient', 'generate', `实例 ${instanceId} 开始生成`, instanceId)
 
       const result = await requestAmbientProgram({
         character,
@@ -201,12 +213,12 @@ export function CharacterStage({
           generatedAt,
           error: '',
         })
-        recordDebugEvent('ambient', 'saved', `${result.program.clips.length} 个动作`)
+        recordDebugEvent('ambient', 'saved', `${result.program.clips.length} 个动作`, instanceId)
         applyAmbient(result.program, generatedAt)
         return
       }
 
-      recordDebugEvent('ambient', 'failed', result.error)
+      recordDebugEvent('ambient', 'failed', result.error, instanceId)
       useAmbientStore.getState().fail(instanceId, result.error)
       // 更新失败时回到旧编排，并按当前时间定位阶段。
       if (!director?.ambientActive)
@@ -216,7 +228,7 @@ export function CharacterStage({
     const scheduleAmbient = () => {
       clearAmbientTimer()
       const token = ++ambientGeneration
-      recordDebugEvent('ambient', 'schedule', `${AMBIENT_REPLY_DELAY_MS / 1000} 秒后生成`)
+      recordDebugEvent('ambient', 'schedule', `${AMBIENT_REPLY_DELAY_MS / 1000} 秒后生成`, instanceId)
       ambientTimer = window.setTimeout(() => {
         ambientTimer = null
         void generateAmbient(token)
@@ -431,7 +443,7 @@ export function CharacterStage({
 
         // 聊天窗的事件：说话、回合开始、回复结束、表演计划与环境编排。
         unsubscribePetEvent = onPetEvent((event) => {
-          recordDebugEvent('stage', event.kind, JSON.stringify(event))
+          recordDebugEvent('stage', event.kind, JSON.stringify(event), instanceId)
           const forThis = 'instanceId' in event && event.instanceId === instanceId
 
           if (event.kind === 'speech-started') {
@@ -479,6 +491,12 @@ export function CharacterStage({
       catch (error) {
         // 资源加载失败时窗口保持透明，不阻塞其他窗口。
         console.warn('[aipets] 角色舞台加载失败', error)
+        recordDebugEvent(
+          'stage',
+          'load-error',
+          error instanceof Error ? error.message : String(error),
+          instanceId,
+        )
       }
     })()
 
@@ -488,6 +506,8 @@ export function CharacterStage({
       clearAmbientTimer()
       if (debugTimer !== null)
         window.clearInterval(debugTimer)
+      // 卸载后不再保留该实例的调试快照，多实例时面板不会留下幽灵数据。
+      removeStageDebug(instanceId ?? '')
       drag?.dispose()
       observer?.stop()
       unsubscribePetEvent?.()

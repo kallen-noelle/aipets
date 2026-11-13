@@ -48,7 +48,12 @@ function truncate(text: string, limit: number): string {
 }
 
 function errorText(error: unknown): string {
-  return error instanceof Error ? error.message : '环境编排失败'
+  if (error instanceof Error) {
+    // fetch/网络错误常把真正原因放在 cause 里。
+    const cause = error.cause instanceof Error ? `（${error.cause.message}）` : ''
+    return `${error.message}${cause}`
+  }
+  return String(error ?? '环境编排失败')
 }
 
 async function systemPrompt(request: AmbientRequest): Promise<string> {
@@ -129,13 +134,13 @@ export async function requestAmbientProgram(request: AmbientRequest): Promise<Am
   const directorModel = useAnimationStore.getState().directorModel.trim()
     || (useModelsStore.getState().selected ?? '').trim()
   if (!directorModel) {
-    recordDebugEvent('ambient', 'skip', '导演模型与对话模型均为空')
+    recordDebugEvent('ambient', 'skip', '导演模型与对话模型均为空', request.instanceId)
     return { program: null, error: '导演模型未配置' }
   }
 
   const holds = longActions(request.character)
   if (!holds.length) {
-    recordDebugEvent('ambient', 'skip', '没有长动作素材')
+    recordDebugEvent('ambient', 'skip', '没有长动作素材', request.instanceId)
     return { program: null, error: '没有可用的长动作素材' }
   }
 
@@ -147,11 +152,11 @@ export async function requestAmbientProgram(request: AmbientRequest): Promise<Am
   }
   catch (error) {
     const message = errorText(error)
-    recordDebugEvent('ambient', 'model-error', message)
+    recordDebugEvent('ambient', 'model-error', message, request.instanceId)
     return { program: null, error: message }
   }
 
-  recordDebugEvent('ambient', 'request', `${directorModel}｜长动作 ${holds.length}`)
+  recordDebugEvent('ambient', 'request', `${directorModel}｜长动作 ${holds.length}`, request.instanceId)
 
   const prompt = await systemPrompt(request)
   const messages = [
@@ -159,24 +164,30 @@ export async function requestAmbientProgram(request: AmbientRequest): Promise<Am
     new HumanMessage(`现在时间：${new Date().toISOString()}。请编排从此刻开始的作息。`),
   ]
 
+  let failure = ''
   const result = await withTimeout(
     signal => model.invoke(messages, { signal }),
     TIMEOUT_MS,
+    (error, timedOut) => {
+      failure = timedOut ? `请求超过 ${TIMEOUT_MS}ms 被中止` : errorText(error)
+      recordDebugEvent('ambient', 'request-error', failure, request.instanceId)
+    },
   )
   if (!result) {
-    recordDebugEvent('ambient', 'timeout', `超过 ${TIMEOUT_MS}ms 或请求失败`)
-    return { program: null, error: '环境编排请求失败或超时' }
+    if (!failure)
+      failure = '环境编排请求失败或超时'
+    return { program: null, error: failure }
   }
 
   const parsed = parseJsonObject(contentText(result.content))
   if (!parsed) {
-    recordDebugEvent('ambient', 'bad-json', contentText(result.content).slice(0, 200))
+    recordDebugEvent('ambient', 'bad-json', contentText(result.content).slice(0, 200), request.instanceId)
     return { program: null, error: '环境编排返回的内容不是 JSON' }
   }
 
   const clips = parseClips(parsed, request)
   if (!clips.length) {
-    recordDebugEvent('ambient', 'no-clips', contentText(result.content).slice(0, 200))
+    recordDebugEvent('ambient', 'no-clips', contentText(result.content).slice(0, 200), request.instanceId)
     return { program: null, error: '没有可用动作' }
   }
 
@@ -187,7 +198,7 @@ export async function requestAmbientProgram(request: AmbientRequest): Promise<Am
 
   const checked = parseAmbientProgram(program)
   if (!checked) {
-    recordDebugEvent('ambient', 'invalid', JSON.stringify(program).slice(0, 200))
+    recordDebugEvent('ambient', 'invalid', JSON.stringify(program).slice(0, 200), request.instanceId)
     return { program: null, error: '环境编排结构不合法' }
   }
 
@@ -195,6 +206,7 @@ export async function requestAmbientProgram(request: AmbientRequest): Promise<Am
     'ambient',
     'plan',
     `${checked.clips.length} 动作｜${Math.round(totalHoldMs(checked.clips) / HOUR)} 小时`,
+    request.instanceId,
   )
   return { program: checked, error: '' }
 }

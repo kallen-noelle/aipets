@@ -14,6 +14,8 @@ export interface DebugEvent {
   source: DebugSource
   kind: string
   detail: string
+  /** 事件所属实例；聊天等全局事件为空。 */
+  instanceId?: string
 }
 
 export interface DebugVideo {
@@ -39,26 +41,32 @@ export interface StageDebugSnapshot {
 
 export interface DebugSnapshot {
   events: DebugEvent[]
-  stage: StageDebugSnapshot | null
+  /** 按实例保存的舞台快照，顺序为首次上报顺序。 */
+  stages: StageDebugSnapshot[]
 }
 
 const MAX_EVENTS = 40
 const listeners = new Set<() => void>()
 
 let events: DebugEvent[] = []
-let stage: StageDebugSnapshot | null = null
+const stages = new Map<string, StageDebugSnapshot>()
 let nextId = 1
-let snapshot: DebugSnapshot = { events, stage }
+let snapshot: DebugSnapshot = { events, stages: [] }
 
 function notify(): void {
   // 每次变化生成新对象，useSyncExternalStore 才能判定更新。
-  snapshot = { events, stage }
+  snapshot = { events, stages: [...stages.values()] }
   for (const listener of listeners)
     listener()
 }
 
-/** 记录一条调试事件。 */
-export function recordDebugEvent(source: DebugSource, kind: string, detail = ''): void {
+/** 记录一条调试事件。传入 instanceId 后只出现在该实例的监控面板里。 */
+export function recordDebugEvent(
+  source: DebugSource,
+  kind: string,
+  detail = '',
+  instanceId?: string,
+): void {
   if (!import.meta.env.DEV)
     return
 
@@ -68,23 +76,37 @@ export function recordDebugEvent(source: DebugSource, kind: string, detail = '')
     source,
     kind,
     detail: detail.slice(0, 300),
+    ...(instanceId ? { instanceId } : {}),
   }
   events = [...events.slice(-(MAX_EVENTS - 1)), event]
   notify()
 }
 
-/** 舞台每 500 毫秒上报一次运行时状态。 */
+/** 舞台每 500 毫秒上报一次运行时状态，按实例覆盖。 */
 export function publishStageDebug(next: StageDebugSnapshot): void {
-  if (!import.meta.env.DEV)
+  if (!import.meta.env.DEV || !next.instanceId)
     return
 
-  stage = next
+  stages.set(next.instanceId, next)
   notify()
 }
 
-/** 清空已记录事件，舞台快照保留。 */
-export function clearDebugEvents(): void {
-  events = []
+/** 实例卸载后移除它的舞台快照，避免留下过期数据。 */
+export function removeStageDebug(instanceId: string): void {
+  if (!import.meta.env.DEV || !instanceId)
+    return
+
+  if (!stages.delete(instanceId))
+    return
+
+  notify()
+}
+
+/** 清空已记录事件；传 instanceId 时只清该实例。 */
+export function clearDebugEvents(instanceId?: string): void {
+  events = instanceId
+    ? events.filter(event => event.instanceId !== instanceId)
+    : []
   notify()
 }
 
