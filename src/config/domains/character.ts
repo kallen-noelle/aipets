@@ -54,11 +54,15 @@ interface CharacterState extends CharacterConfig {
   instances: CharacterInstance[]
   /** 当前对话的实例。 */
   activeInstanceId: string
+  /** 是否已经按角色索引初始化过实例；用户手动增删后不再自动补全。 */
+  instancesSeeded: boolean
   update: (patch: Partial<CharacterConfig>) => void
   addInstance: (characterId: string) => string
   updateInstance: (id: string, patch: Partial<Omit<CharacterInstance, 'id'>>) => void
   removeInstance: (id: string) => void
   setActiveInstance: (id: string) => void
+  /** 按角色索引补齐默认实例；只对未自定义过的默认状态生效。 */
+  seedInstances: (characterIds: string[]) => void
 }
 
 /** 旧版单角色配置迁移后使用的固定实例标识。 */
@@ -140,6 +144,7 @@ function mergeStored(persisted: unknown, current: CharacterState): CharacterStat
     poolChance: saved.poolChance ?? current.poolChance,
     instances: migrated,
     activeInstanceId,
+    instancesSeeded: saved.instancesSeeded === true,
   }
 }
 
@@ -153,6 +158,7 @@ export const useCharacterStore = create<CharacterState>()(
         enabled: true,
       }],
       activeInstanceId: LEGACY_INSTANCE_ID,
+      instancesSeeded: false,
       idleIntervalMs: [8000, 16000] as [number, number],
       poolChance: 0.25,
       update: patch => set(patch),
@@ -170,12 +176,14 @@ export const useCharacterStore = create<CharacterState>()(
             },
           ],
           activeInstanceId: id,
+          instancesSeeded: true,
         }))
         return id
       },
 
       updateInstance: (id, patch) => set(state => ({
         instances: state.instances.map(item => item.id === id ? { ...item, ...patch } : item),
+        instancesSeeded: true,
       })),
 
       removeInstance: (id) => {
@@ -190,6 +198,7 @@ export const useCharacterStore = create<CharacterState>()(
             activeInstanceId: state.activeInstanceId === id
               ? instances[0].id
               : state.activeInstanceId,
+            instancesSeeded: true,
           }
         })
 
@@ -200,6 +209,35 @@ export const useCharacterStore = create<CharacterState>()(
       setActiveInstance: id => set(state => (
         state.instances.some(item => item.id === id) ? { activeInstanceId: id } : state
       )),
+
+      seedInstances: (characterIds) => {
+        const state = get()
+        if (state.instancesSeeded)
+          return
+
+        // 只有从未自定义过实例（仍是单个 instance-main）时才展开成全部角色。
+        const onlyDefault = state.instances.length === 1
+          && state.instances[0].id === LEGACY_INSTANCE_ID
+          && state.instances[0].characterId === 'main'
+        const ids = [...new Set(characterIds)].filter(Boolean)
+
+        if (!onlyDefault || ids.length === 0) {
+          set({ instancesSeeded: true })
+          return
+        }
+
+        const instances = ids.map((characterId, index) => ({
+          id: index === 0 ? LEGACY_INSTANCE_ID : newInstanceId(),
+          characterId,
+          appearance: { ...defaultInstanceAppearance },
+          enabled: true,
+        }))
+        set({
+          instances,
+          activeInstanceId: instances[0].id,
+          instancesSeeded: true,
+        })
+      },
     }),
     persistOptions<CharacterState>('character', 1, mergeStored),
   ),

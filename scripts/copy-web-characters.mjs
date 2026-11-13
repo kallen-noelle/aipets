@@ -1,7 +1,7 @@
 /**
  * 网页静态部署：按白名单把角色素材复制到 dist/characters。
  *
- * 默认只上线 character5；可通过 AIPETS_WEB_CHARACTERS 环境变量指定多个角色 id，
+ * 默认上线 main 与 character5；可通过 AIPETS_WEB_CHARACTERS 环境变量指定角色 id，
  * 例如 AIPETS_WEB_CHARACTERS=character5,character6。
  * 索引也会同步裁剪，部署端不会加载未上线角色的配置。
  *
@@ -37,7 +37,7 @@ const configFile = join(source, 'characters.config.json')
 if (!existsSync(configFile))
   throw new Error(`找不到角色索引：${configFile}`)
 
-const webCharacterIds = (process.env.AIPETS_WEB_CHARACTERS ?? 'character5')
+const webCharacterIds = (process.env.AIPETS_WEB_CHARACTERS ?? 'main,character5')
   .split(',')
   .map(id => id.trim())
   .filter(Boolean)

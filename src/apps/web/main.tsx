@@ -10,10 +10,12 @@ import { RouterProvider } from 'react-router'
 
 import '@/index.css'
 import { bootstrap } from '@/app/bootstrap'
+import { seedDefaultInstances } from '@/character/seed-instances'
 
 import { webRouter } from './router'
 
 bootstrap()
+void seedDefaultInstances()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
