@@ -67,6 +67,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), characterAssets()],
   build: {
     // 两个独立入口：index.html 只属于网页版，desktop.html 只属于桌面版。
+    outDir: 'out',
     rolldownOptions: {
       input: {
         index: path.resolve(import.meta.dirname, 'index.html'),

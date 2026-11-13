@@ -12,7 +12,7 @@ module.exports = {
     buildResources: 'electron/resources',
   },
   files: [
-    'dist/**/*',
+    'out/**/*',
     'electron/**/*',
     'package.json',
   ],
