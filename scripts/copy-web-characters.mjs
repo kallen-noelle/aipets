@@ -1,5 +1,5 @@
 /**
- * 网页静态部署：把角色素材复制到 out/characters。
+ * 网页静态部署：把角色素材复制到 dist/characters。
  *
  * 只复制运行时需要的 `characters.config.json` 与每个角色的 `animations/*.webm`，
  * 跳过 mp4、memes、动作提示词等非运行时文件。
@@ -22,10 +22,10 @@ import { fileURLToPath } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const source = join(root, 'assets', 'characters')
-const target = join(root, 'out', 'characters')
+const target = join(root, 'dist', 'characters')
 
-if (!existsSync(join(root, 'out', 'index.html')))
-  throw new Error('out/index.html 不存在，请先运行 npm run build')
+if (!existsSync(join(root, 'dist', 'index.html')))
+  throw new Error('dist/index.html 不存在，请先运行 npm run build')
 
 const configFile = join(source, 'characters.config.json')
 if (!existsSync(configFile))
@@ -84,7 +84,7 @@ for (const entry of readdirSync(source, { withFileTypes: true })) {
 }
 
 console.log(
-  `已复制 ${files} 个文件 / ${(bytes / 1024 / 1024).toFixed(1)} MB 到 out/characters`
+  `已复制 ${files} 个文件 / ${(bytes / 1024 / 1024).toFixed(1)} MB 到 dist/characters`
   + `（硬链接 ${hardlinks}，普通复制 ${copied}）`,
 )
 if (skipped.length > 0)
