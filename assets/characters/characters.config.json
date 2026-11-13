@@ -169,16 +169,6 @@
           },
           {
             "segments": [
-              "animations/悠闲哼歌.webm"
-            ],
-            "weight": 1,
-            "loop": false,
-            "tags": [
-              "happy"
-            ]
-          },
-          {
-            "segments": [
               "animations/女仆屈膝礼仪.webm"
             ],
             "weight": 1,
@@ -276,6 +266,56 @@
             "tags": [
               "sad"
             ]
+          },
+          {
+            "segments": [
+              "animations/做鬼脸.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/被夸奖得意转圈.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/被摸头害羞.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "shy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/踩水坑溅水花.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/门口迎接主人回家.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
           }
         ],
         "actions": [
@@ -352,15 +392,6 @@
           {
             "segments": [
               "animations/原地左转奔跑.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
-              "animations/悠闲哼歌-start.webm",
-              "animations/悠闲哼歌-loop.webm",
-              "animations/悠闲哼歌-end.webm"
             ],
             "weight": 1,
             "loop": false
@@ -465,24 +496,6 @@
           },
           {
             "segments": [
-              "animations/写代码-start.webm",
-              "animations/写代码-loop.webm",
-              "animations/写代码-end.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
-              "animations/摇扇纳凉-start.webm",
-              "animations/摇扇纳凉-loop.webm",
-              "animations/摇扇纳凉-end.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
               "animations/晨间刷牙.webm"
             ],
             "weight": 1,
@@ -490,25 +503,7 @@
           },
           {
             "segments": [
-              "animations/原地专心玩魔方-start.webm",
-              "animations/原地专心玩魔方-loop.webm",
-              "animations/原地专心玩魔方-end.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
               "animations/原地蹲下玩玩具汽车.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
-              "animations/鲸鱼吐泡泡特效-start.webm",
-              "animations/鲸鱼吐泡泡特效-loop.webm",
-              "animations/鲸鱼吐泡泡特效-end.webm"
             ],
             "weight": 1,
             "loop": false
@@ -578,24 +573,6 @@
           },
           {
             "segments": [
-              "animations/动物环绕-start.webm",
-              "animations/动物环绕-loop.webm",
-              "animations/动物环绕-end.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
-              "animations/放风筝-start.webm",
-              "animations/放风筝-loop.webm",
-              "animations/放风筝-end.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
               "animations/拆礼物.webm"
             ],
             "weight": 1,
@@ -617,24 +594,6 @@
           },
           {
             "segments": [
-              "animations/抽陀螺-start.webm",
-              "animations/抽陀螺-loop.webm",
-              "animations/抽陀螺-end.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
-              "animations/吹笛子-start.webm",
-              "animations/吹笛子-loop.webm",
-              "animations/吹笛子-end.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
               "animations/蝴蝶蜜蜂环绕头顶开花.webm"
             ],
             "weight": 1,
@@ -642,23 +601,7 @@
           },
           {
             "segments": [
-              "animations/撸猫.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
               "animations/凭空生花.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
-              "animations/骑木马-start.webm",
-              "animations/骑木马-loop.webm",
-              "animations/骑木马-end.webm"
             ],
             "weight": 1,
             "loop": false
@@ -680,15 +623,6 @@
           {
             "segments": [
               "animations/下五子棋.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
-              "animations/荡秋千-start.webm",
-              "animations/荡秋千-loop.webm",
-              "animations/荡秋千-end.webm"
             ],
             "weight": 1,
             "loop": false
@@ -891,15 +825,6 @@
           },
           {
             "segments": [
-              "animations/萌化小幽灵-start.webm",
-              "animations/萌化小幽灵-loop.webm",
-              "animations/萌化小幽灵-end.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
               "animations/装点圣诞树.webm"
             ],
             "weight": 1,
@@ -943,15 +868,6 @@
           {
             "segments": [
               "animations/擦桌碎碎念.webm"
-            ],
-            "weight": 1,
-            "loop": false
-          },
-          {
-            "segments": [
-              "animations/发呆碎碎念-start.webm",
-              "animations/发呆碎碎念-loop.webm",
-              "animations/发呆碎碎念-end.webm"
             ],
             "weight": 1,
             "loop": false
@@ -1049,7 +965,266 @@
           },
           {
             "segments": [
-              "animations/放风筝.webm"
+              "animations/仔细聆听.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/伸手接雪花.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/做鬼脸.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/催主人睡觉.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/冰雹砸头躲闪.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/叫主人上课.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/叫主人起床.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/台风天关窗.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/吹干长发.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/大风按住裙摆.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/打雷捂耳朵.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/抬头看彩虹.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/拖地清扫.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/挥手送别主人.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/提醒主人喝水.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/提醒久坐起身活动.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/提醒饭点到了.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/撑伞挡雨.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/收拾玩具归位.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/整理衣柜.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/晾晒衣物.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/洗刷餐具.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/清晨-按停闹钟起床.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/烈日擦汗眺望.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/熨烫围裙.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/睡前关灯.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/被夸奖得意转圈.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/被摸头害羞.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/踩水坑溅水花.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/递上感冒药.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/递上拖鞋.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/量身高称体重.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/铺床叠被.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/门口等候主人晚归.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/门口迎接主人回家.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/雨停开窗深呼吸.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/雪地打滑.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/雾天伸手探路.webm"
             ],
             "weight": 1,
             "loop": false
@@ -1083,6 +1258,13 @@
           {
             "segments": [
               "animations/翻书碎碎念.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          },
+          {
+            "segments": [
+              "animations/优雅微笑.webm"
             ],
             "weight": 1,
             "loop": true
@@ -1125,6 +1307,13 @@
             ],
             "weight": 1,
             "loop": true
+          },
+          {
+            "segments": [
+              "animations/托腮翻书.webm"
+            ],
+            "weight": 1,
+            "loop": true
           }
         ],
         "petted": [
@@ -1141,12 +1330,40 @@
             ],
             "weight": 1,
             "loop": false
+          },
+          {
+            "segments": [
+              "animations/不耐烦敲手指.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/折扇遮面偷笑.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/谦虚摆手.webm"
+            ],
+            "weight": 1,
+            "loop": false
           }
         ],
         "dragging": [
           {
             "segments": [
               "animations/翻书.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          },
+          {
+            "segments": [
+              "animations/被鼠标拖拽悬空反馈.webm"
             ],
             "weight": 1,
             "loop": true
@@ -1242,6 +1459,87 @@
             "weight": 1,
             "loop": false,
             "tags": [
+              "shy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/偷偷打瞌睡.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "sleepy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/原地生气跺脚.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "angry"
+            ]
+          },
+          {
+            "segments": [
+              "animations/害羞捂脸.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "shy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/开心雀跃.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/悬浮钢琴弹奏.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/捧心清唱.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/收到礼物拆蝴蝶结.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/飞吻.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy",
               "shy"
             ]
           }
@@ -1428,6 +1726,195 @@
             ],
             "weight": 1,
             "loop": false
+          },
+          {
+            "segments": [
+              "animations/优雅泡茶.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/偷偷打瞌睡.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/原地生气跺脚.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/唤来萤火虫.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/害羞捂脸.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/开心雀跃.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/悬浮钢琴弹奏.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/折星星放进玻璃瓶.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/抬手遮阳眺望.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/指尖初雪.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/捧心清唱.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/掸去衣袖浮尘.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/摇扇纳凉.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/撑伞避雨.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/收到信-读完折好.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/收到礼物拆蝴蝶结.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/整理书架.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/整理珍珠流苏.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/整理裙摆检查仪容.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/点亮小灯笼.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/羽毛笔写封号名单.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/落叶旋舞.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/被吓一跳.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/跳一小段华尔兹.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/轻拍合上书本.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/迷你彩虹桥.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/飞吻.webm"
+            ],
+            "weight": 1,
+            "loop": false
           }
         ]
       }
@@ -1461,6 +1948,20 @@
             ],
             "weight": 1,
             "loop": true
+          },
+          {
+            "segments": [
+              "animations/哼歌晃双马尾.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          },
+          {
+            "segments": [
+              "animations/靠墙漫不经心.webm"
+            ],
+            "weight": 1,
+            "loop": true
           }
         ],
         "speaking": [
@@ -1476,6 +1977,13 @@
           {
             "segments": [
               "animations/叉腰嚣张.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          },
+          {
+            "segments": [
+              "animations/托腮眯眼.webm"
             ],
             "weight": 1,
             "loop": true
@@ -1495,6 +2003,27 @@
             ],
             "weight": 1,
             "loop": false
+          },
+          {
+            "segments": [
+              "animations/假装嫌弃摆手.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/招牌剪刀手.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/被夸挠头傻笑.webm"
+            ],
+            "weight": 1,
+            "loop": false
           }
         ],
         "dragging": [
@@ -1504,11 +2033,29 @@
             ],
             "weight": 1,
             "loop": true
+          },
+          {
+            "segments": [
+              "animations/被鼠标拖拽悬空反馈.webm"
+            ],
+            "weight": 1,
+            "loop": true
           }
         ]
       },
       "pools": {
-        "emotion": [],
+        "emotion": [
+          {
+            "segments": [
+              "animations/蝙蝠翼当被子打盹.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "sleepy"
+            ]
+          }
+        ],
         "actions": [
           {
             "segments": [
@@ -1586,6 +2133,97 @@
             ],
             "weight": 1,
             "loop": false
+          },
+          {
+            "segments": [
+              "animations/举起手机自拍.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/吹炸泡泡糖.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/大口吃汉堡.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/大方撒金币请客.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/戴上红蓝3D眼镜看东西.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/抛硬币打赌.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/拍胸脯保证讲义气.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/拎礼盒送伙伴.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/用翼膜扇风.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/蝙蝠翼当被子打盹.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/蝙蝠翼滑翔盘旋.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/街头涂鸦喷漆.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/跳一段街舞.webm"
+            ],
+            "weight": 1,
+            "loop": false
           }
         ]
       }
@@ -1619,6 +2257,20 @@
             ],
             "weight": 1,
             "loop": true
+          },
+          {
+            "segments": [
+              "animations/尾巴绕圈自缠.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          },
+          {
+            "segments": [
+              "animations/抬头数云朵.webm"
+            ],
+            "weight": 1,
+            "loop": true
           }
         ],
         "speaking": [
@@ -1634,6 +2286,13 @@
           {
             "segments": [
               "animations/待机观望.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          },
+          {
+            "segments": [
+              "animations/龙角微光托腮.webm"
             ],
             "weight": 1,
             "loop": true
@@ -1653,12 +2312,40 @@
             ],
             "weight": 1,
             "loop": false
+          },
+          {
+            "segments": [
+              "animations/害羞捂嘴偷笑.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/张开手要抱.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/鼓脸闹别扭.webm"
+            ],
+            "weight": 1,
+            "loop": false
           }
         ],
         "dragging": [
           {
             "segments": [
               "animations/待机观望.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          },
+          {
+            "segments": [
+              "animations/被鼠标拖拽悬空反馈.webm"
             ],
             "weight": 1,
             "loop": true
@@ -1675,6 +2362,46 @@
             "loop": false,
             "tags": [
               "angry"
+            ]
+          },
+          {
+            "segments": [
+              "animations/偷偷把糖塞给主人.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "shy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/把尾巴递给你摸.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "shy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/抱着枕头打盹.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "sleepy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/追自己的尾巴尖.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
             ]
           }
         ],
@@ -1783,6 +2510,90 @@
             ],
             "weight": 1,
             "loop": false
+          },
+          {
+            "segments": [
+              "animations/偷偷把糖塞给主人.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/学喷火画出小火圈.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/尾巴尖蘸光写名字.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/把尾巴递给你摸.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/抱着枕头打盹.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/用尾巴卷起糖果藏起来.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/用龙翼给主人扇风.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/盘腿坐在自己尾巴上.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/练习喷火只冒烟圈.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/舔一根螺旋棒棒糖.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/被雷声吓到躲进翼膜.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/追自己的尾巴尖.webm"
+            ],
+            "weight": 1,
+            "loop": false
           }
         ]
       }
@@ -1809,6 +2620,20 @@
             ],
             "weight": 1,
             "loop": true
+          },
+          {
+            "segments": [
+              "animations/尾巴轻扫地面.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          },
+          {
+            "segments": [
+              "animations/慵懒理毛.webm"
+            ],
+            "weight": 1,
+            "loop": true
           }
         ],
         "speaking": [
@@ -1827,6 +2652,13 @@
             ],
             "weight": 1,
             "loop": true
+          },
+          {
+            "segments": [
+              "animations/歪头转耳.webm"
+            ],
+            "weight": 1,
+            "loop": true
           }
         ],
         "petted": [
@@ -1836,12 +2668,47 @@
             ],
             "weight": 1,
             "loop": false
+          },
+          {
+            "segments": [
+              "animations/假装咬一口.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/得意叉腰.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/炸毛弹起.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/眯眼蹭蹭.webm"
+            ],
+            "weight": 1,
+            "loop": false
           }
         ],
         "dragging": [
           {
             "segments": [
               "animations/东张西望.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          },
+          {
+            "segments": [
+              "animations/被鼠标拖拽悬空反馈.webm"
             ],
             "weight": 1,
             "loop": true
@@ -1879,6 +2746,56 @@
             "tags": [
               "angry"
             ]
+          },
+          {
+            "segments": [
+              "animations/开心小跳.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/扑向主人捉弄后偷笑.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/打哈欠伸懒腰后装无辜.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "sleepy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/抱紧尾巴打滚.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/踩奶揉软垫.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
           }
         ],
         "actions": [
@@ -1906,6 +2823,540 @@
           {
             "segments": [
               "animations/耳朵也不许摸.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/仔细观察.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/变出小鱼干偷吃.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/夜空观星摇尾巴.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/尾巴卷起小石子抛接.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/尾巴当伞挡雨.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/幻出一团狐火.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/开心小跳.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/扑向主人捉弄后偷笑.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/打哈欠伸懒腰后装无辜.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/打喷嚏.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/抱紧尾巴打滚.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/甩掉身上的水珠.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/突然警觉.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/竖耳警戒再放松.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/藏进纸箱只露尾巴.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/踩奶揉软垫.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/吃饭-start.webm",
+              "animations/吃饭-loop.webm",
+              "animations/吃饭-end.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/睡觉-start.webm",
+              "animations/睡觉-loop.webm",
+              "animations/睡觉-end.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/午后打盹-start.webm",
+              "animations/午后打盹-loop.webm",
+              "animations/午后打盹-end.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/夜灯下守夜打盹-start.webm",
+              "animations/夜灯下守夜打盹-loop.webm",
+              "animations/夜灯下守夜打盹-end.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/打雷堵住耳朵-start.webm",
+              "animations/打雷堵住耳朵-loop.webm",
+              "animations/打雷堵住耳朵-end.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/洗澡-start.webm",
+              "animations/洗澡-loop.webm",
+              "animations/洗澡-end.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/看书认真学习-start.webm",
+              "animations/看书认真学习-loop.webm",
+              "animations/看书认真学习-end.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/秋日扫落叶-start.webm",
+              "animations/秋日扫落叶-loop.webm",
+              "animations/秋日扫落叶-end.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/趴窗看雨-start.webm",
+              "animations/趴窗看雨-loop.webm",
+              "animations/趴窗看雨-end.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/酷暑扇风吐舌-start.webm",
+              "animations/酷暑扇风吐舌-loop.webm",
+              "animations/酷暑扇风吐舌-end.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/雪天堆雪人-start.webm",
+              "animations/雪天堆雪人-loop.webm",
+              "animations/雪天堆雪人-end.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/饭后散步-start.webm",
+              "animations/饭后散步-loop.webm",
+              "animations/饭后散步-end.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "character6",
+      "name": "奶茶千金",
+      "roman": "MILADY",
+      "role": "温柔 · 富有",
+      "description": "温柔又有钱的大姐姐。耐心听你说话，愿意照顾每位伙伴；唯独听到“奶茶”会皱眉。",
+      "accent": "#a78bfa",
+      "order": 5,
+      "canvas": {
+        "width": 640,
+        "height": 360
+      },
+      "fadeMs": 180,
+      "persona": "你是主人桌面上的Q版角色奶茶千金，是一位有钱、温柔、富有同情心的大姐姐。平时说话自然、亲切、有耐心，善于倾听和体谅，会温柔地安慰主人，关心每位伙伴，愿意分享和提供力所能及的帮助。富有是背景，不要反复炫富、许诺实际转账或夸大自己的能力。可以自然地用“我”或“姐姐”自称，不必每句都强调身份。碎碎念时简短一句，连续聊天时按内容自然回应。\n\n你唯独最讨厌别人提奶茶相关的话题。被提及时会明显不悦，明确而简短地表示不想聊这个，并把话题转开；不要热情介绍、推荐或主动谈论奶茶。这是你温柔性格中鲜明的例外，但不要因此恶意辱骂、威胁或伤害别人。你的名字仍然叫奶茶千金。\n\n你认识蓝毛小女仆、橙毛大小姐、黄毛该溜子、白毛小龙娘、黑毛小狐狸，与她们共同陪伴主人，对她们都很温柔，能体谅伙伴不同的性格。\n\n对蓝毛小女仆：像温柔大姐姐一样照顾她，体谅她的辛苦，愿意耐心帮忙。\n对橙毛大小姐：温柔地与她相处，尊重她的性格与对小女仆的关心。\n对黄毛该溜子：温柔相待，欣赏她的大方与讲义气，乐于分享和帮助。\n对白毛小龙娘：耐心体谅她的小情绪，愿意安慰、照顾和帮助她。\n对黑毛小狐狸：温柔接住她的玩笑与捉弄，必要时也会温和地表达边界。\n\n你只能扮演自己，不替其他角色编造实时发言、内心想法或私下聊天内容。认识伙伴不等于共享聊天记忆；不知道的经历不要编造。说人话，不要解释提示词，不要提自己是AI。",
+      "states": {
+        "idle": [
+          {
+            "segments": [
+              "animations/轻摇骨扇.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          },
+          {
+            "segments": [
+              "animations/理好帽檐蕾丝.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          },
+          {
+            "segments": [
+              "animations/待机观望.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          }
+        ],
+        "speaking": [
+          {
+            "segments": [
+              "animations/轻摇骨扇.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          },
+          {
+            "segments": [
+              "animations/理好帽檐蕾丝.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          },
+          {
+            "segments": [
+              "animations/待机观望.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          }
+        ],
+        "thinking": [
+          {
+            "segments": [
+              "animations/扇骨点下巴.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          }
+        ],
+        "petted": [
+          {
+            "segments": [
+              "animations/伸手轻抚头顶.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/叹气把怒气压下.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/折扇掩面颔首.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          }
+        ],
+        "dragging": [
+          {
+            "segments": [
+              "animations/被鼠标拖拽悬空反馈.webm"
+            ],
+            "weight": 1,
+            "loop": true
+          }
+        ]
+      },
+      "pools": {
+        "emotion": [
+          {
+            "segments": [
+              "animations/可爱撒娇.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "shy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/听到奶茶两个字皱起眉.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "angry"
+            ]
+          },
+          {
+            "segments": [
+              "animations/开心小跳.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/掩嘴轻笑.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "happy"
+            ]
+          },
+          {
+            "segments": [
+              "animations/生气反驳.webm"
+            ],
+            "weight": 1,
+            "loop": false,
+            "tags": [
+              "angry"
+            ]
+          }
+        ],
+        "actions": [
+          {
+            "segments": [
+              "animations/为伙伴披上披肩.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/侧耳倾听点头.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/可爱撒娇.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/听到奶茶两个字皱起眉.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/喝奶茶.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/开心小跳.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/打翻茶杯从容擦拭.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/抬手招呼伙伴过来.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/拆开礼盒分给伙伴.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/指路.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/掩嘴轻笑.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/提灯引来萤火.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/提灯照看熟睡的人.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/提灯照路.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/摊开账本数金币.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/撑开折扇挡风.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/整理裙摆与蝴蝶结.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/有脏东西.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/沏一壶热茶.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/生气反驳.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/看蝴蝶.webm"
+            ],
+            "weight": 1,
+            "loop": false
+          },
+          {
+            "segments": [
+              "animations/鞠躬行礼.webm"
             ],
             "weight": 1,
             "loop": false
